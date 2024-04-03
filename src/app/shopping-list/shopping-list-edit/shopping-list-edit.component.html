@@ -1,0 +1,43 @@
+<div class="row">
+  <div class="col-xs-12">
+    <form>
+      <div class="row">
+        <div class="col-sm-5 form-group">
+          <label for="name">Name</label>
+          <input
+            type="text"
+            name="name"
+            id="name"
+            class="form-control"
+            #nameInputRef
+          />
+        </div>
+        <div class="col-sm-2 form-group">
+          <label for="amount">Amount</label>
+          <input
+            type="number"
+            name="amount"
+            id="amount"
+            class="form-control"
+            #amountInputRef
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 d-flex gap-2 mt-3">
+          <button
+            class="btn btn-success"
+            type="button"
+            (click)="onIngredientAdd()"
+          >
+            Add
+          </button>
+          <button class="btn btn-danger" type="button">Delete</button>
+          <button class="btn btn-primary" type="button" (click)="clearForm()">
+            Clear
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
