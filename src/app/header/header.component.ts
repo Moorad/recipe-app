@@ -8,11 +8,4 @@ type PagesType = 'recipes' | 'shopping-list';
 })
 export class HeaderComponent {
   isCollapsed = true;
-  active: PagesType = 'recipes';
-  @Output() pageChange = new EventEmitter<PagesType>();
-
-  onPageChange(pageName) {
-    this.active = pageName;
-    this.pageChange.emit(this.active);
-  }
 }

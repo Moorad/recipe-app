@@ -7,9 +7,4 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'angular-course-project';
-  activePage = 'recipes';
-
-  onPageChange(pageName) {
-    this.activePage = pageName;
-  }
 }

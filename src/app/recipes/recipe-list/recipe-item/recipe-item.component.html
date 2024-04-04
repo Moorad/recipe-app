@@ -1,6 +1,8 @@
 <a
   class="list-group-item list-group-item-action d-flex justify-content-between"
-  (click)="onRecipeClick()"
+  style="cursor: pointer"
+  [routerLink]="[id]"
+  routerLinkActive="active"
 >
   <div class="pull-left">
     <h4 class="list-group-item-heading">{{ recipe.name }}</h4>

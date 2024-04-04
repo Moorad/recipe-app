@@ -39,4 +39,8 @@ export class RecipeService {
     ),
   ];
   recipeChange = new EventEmitter<Recipe>();
+
+  getRecipeById(id: number) {
+    return this.recipes[id];
+  }
 }
