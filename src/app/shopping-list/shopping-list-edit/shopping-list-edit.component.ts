@@ -1,37 +1,66 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Ingredient } from '../../shared/ingredient.model';
 import { ShoppingListService } from '../shopping-list.service';
+import { NgForm } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-shopping-list-edit',
   templateUrl: './shopping-list-edit.component.html',
 })
-export class ShoppingListEditComponent {
-  @ViewChild('nameInputRef', { static: true })
-  nameInput: ElementRef<HTMLInputElement>;
-  @ViewChild('amountInputRef', { static: true })
-  amountInput: ElementRef<HTMLInputElement>;
+export class ShoppingListEditComponent implements OnInit, OnDestroy {
+  @ViewChild('form', { static: false }) form: NgForm;
+  ingredientSelectSub: Subscription;
+  isEditing = false;
+  ingredientEditedId: number;
 
   constructor(private shoppingListService: ShoppingListService) {}
 
-  onIngredientAdd() {
-    let ingredientName = this.nameInput.nativeElement.value;
-    let ingredientAmount = parseInt(this.amountInput.nativeElement.value);
+  ngOnInit(): void {
+    this.ingredientSelectSub =
+      this.shoppingListService.ingredientSelect.subscribe((ingId) => {
+        this.isEditing = true;
+        this.ingredientEditedId = ingId;
 
-    // Exit if either input is empty
-    if (!ingredientName || isNaN(ingredientAmount)) {
-      return;
+        const selectedIng = this.shoppingListService.getIngredient(ingId);
+        this.form.setValue({
+          name: selectedIng.name,
+          amount: selectedIng.amount,
+        });
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.ingredientSelectSub.unsubscribe();
+  }
+
+  onSubmit(form: NgForm) {
+    let ingredientName = form.value.name;
+    let ingredientAmount = parseInt(form.value.amount);
+
+    if (this.isEditing) {
+      this.shoppingListService.updateIngredient(
+        this.ingredientEditedId,
+        new Ingredient(ingredientName, ingredientAmount)
+      );
+    } else {
+      this.shoppingListService.addIngredient(
+        new Ingredient(ingredientName, ingredientAmount)
+      );
     }
 
-    this.shoppingListService.addIngredient(
-      new Ingredient(ingredientName, ingredientAmount)
-    );
+    this.clearForm();
+  }
+
+  onDeletion() {
+    this.shoppingListService.deleteIngredient(this.ingredientEditedId);
 
     this.clearForm();
   }
 
   clearForm() {
-    this.nameInput.nativeElement.value = '';
-    this.amountInput.nativeElement.value = '';
+    this.form.reset();
+    this.isEditing = false;
+    this.ingredientEditedId = undefined;
   }
 }

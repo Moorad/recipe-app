@@ -9,12 +9,12 @@ export class Recipe {
   constructor(
     name: string,
     desc: string,
-    imgUrl: string,
+    imageUrl: string,
     ingredents: Ingredient[]
   ) {
     this.name = name;
     this.description = desc;
-    this.imageUrl = imgUrl;
+    this.imageUrl = imageUrl;
     this.ingredients = ingredents;
   }
 }

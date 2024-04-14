@@ -40,7 +40,19 @@ export class RecipeService {
   ];
   recipeChange = new Subject<Recipe>();
 
-  getRecipeById(id: number) {
+  getRecipe(id: number) {
     return this.recipes[id];
+  }
+
+  addRecipe(recipe: Recipe) {
+    this.recipes.push(recipe);
+  }
+
+  updateRecipe(id: number, recipe: Recipe) {
+    this.recipes[id] = recipe;
+  }
+
+  deleteRecipe(id: number) {
+    this.recipes.splice(id, 1);
   }
 }
