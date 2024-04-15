@@ -15,7 +15,7 @@ export class DataStorageService {
 
     this.http
       .put(
-        'https://ng-recipe-app-cf852-default-rtdb.firebaseio.com/recipes.json',
+        'https://ng-recipe-app-dbf7b-default-rtdb.europe-west1.firebasedatabase.app/recipes.json',
         recipes
       )
       .subscribe();
@@ -24,7 +24,7 @@ export class DataStorageService {
   fetchRecipes() {
     return this.http
       .get<Recipe[]>(
-        'https://ng-recipe-app-cf852-default-rtdb.firebaseio.com/recipes.json'
+        'https://ng-recipe-app-dbf7b-default-rtdb.europe-west1.firebasedatabase.app/recipes.json'
       )
       .pipe(
         tap((res) => {
