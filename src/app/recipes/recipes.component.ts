@@ -10,12 +10,12 @@ import { Subscription } from 'rxjs';
 })
 export class RecipesComponent implements OnInit, OnDestroy {
   selectedRecipe: Recipe;
-  recipeChangeSub: Subscription;
+  recipeSelectSub: Subscription;
 
   constructor(private recipeService: RecipeService) {}
 
   ngOnInit(): void {
-    this.recipeChangeSub = this.recipeService.recipeChange.subscribe({
+    this.recipeSelectSub = this.recipeService.recipeSelect.subscribe({
       next: (recipe) => {
         this.selectedRecipe = recipe;
       },
@@ -27,6 +27,6 @@ export class RecipesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.recipeChangeSub.unsubscribe();
+    this.recipeSelectSub.unsubscribe();
   }
 }

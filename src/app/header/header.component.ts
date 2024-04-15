@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-
-type PagesType = 'recipes' | 'shopping-list';
+import { DataStorageService } from '../shared/data-storage.service';
 
 @Component({
   selector: 'app-header',
@@ -8,4 +7,14 @@ type PagesType = 'recipes' | 'shopping-list';
 })
 export class HeaderComponent {
   isCollapsed = true;
+
+  constructor(private dataStorageService: DataStorageService) {}
+
+  onSaveData() {
+    this.dataStorageService.overwriteRecipes();
+  }
+
+  onFetchData() {
+    this.dataStorageService.fetchRecipes().subscribe();
+  }
 }
