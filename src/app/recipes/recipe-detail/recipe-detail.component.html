@@ -15,34 +15,23 @@
 </div>
 <div class="row">
   <div class="col-xs-12">
-    <div class="dropdown">
+    <div ngbDropdown>
       <button
-        class="btn btn-secondary dropdown-toggle"
+        class="btn btn-secondary"
         type="button"
         id="dropdownMenuButton"
-        data-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false"
-        appDropdown
+        ngbDropdownToggle
       >
         Manage recipe
       </button>
-      <div
-        class="dropdown-menu"
-        aria-labelledby="dropdownMenuButton"
-        style="
-          position: absolute;
-          will-change: transform;
-          top: 0px;
-          left: 0px;
-          transform: translate3d(0px, 38px, 0px);
-        "
-      >
-        <a class="dropdown-item" (click)="onToShoppingList()"
-          >To shopping list</a
-        >
-        <a class="dropdown-item" routerLink="edit">Edit recipe</a>
-        <a class="dropdown-item" (click)="onDeleteRecipe()">Delete recipe</a>
+      <div ngbDropdownMenu>
+        <button (click)="onToShoppingList()" ngbDropdownItem>
+          To shopping list
+        </button>
+        <button routerLink="edit" ngbDropdownItem>Edit recipe</button>
+        <button (click)="onDeleteRecipe()" ngbDropdownItem>
+          Delete recipe
+        </button>
       </div>
     </div>
   </div>
