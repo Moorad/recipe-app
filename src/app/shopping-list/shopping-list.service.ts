@@ -2,7 +2,16 @@ import { Subject } from 'rxjs';
 import { Ingredient } from '../shared/ingredient.model';
 
 export class ShoppingListService {
-  ingredients = [new Ingredient('Flour', 300), new Ingredient('Tomato', 5)];
+  ingredients = [
+    new Ingredient('Flour', {
+      value: 12,
+      unit: 'kg',
+    }),
+    new Ingredient('Tomato', {
+      value: 5,
+      unit: 'kg',
+    }),
+  ];
   ingredientSelect = new Subject<number>();
 
   getIngredient(id: number) {

@@ -8,7 +8,8 @@
         (click)="onSelect(i)"
         *ngFor="let ingredient of ingredients; let i = index"
       >
-        {{ ingredient.name }} ({{ ingredient.amount }})
+        {{ ingredient.amount.value }}{{ ingredient.amount.unit }}
+        {{ ingredient.name }}
       </a>
     </div>
   </div>

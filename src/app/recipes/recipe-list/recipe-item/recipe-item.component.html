@@ -6,14 +6,15 @@
 >
   <div class="pull-left">
     <h4 class="list-group-item-heading">{{ recipe.name }}</h4>
-    <p class="list-group-item-text">{{ recipe.description }}</p>
+    <p class="list-group-item-text">
+      {{ recipe.description | truncate : 85 }}
+    </p>
   </div>
   <span class="my-auto">
     <img
       src="{{ recipe.imageUrl }}"
       alt="{{ recipe.name }}"
-      class="img-fluid"
-      style="max-height: 70px"
+      style="height: 70px; width: 90px; object-fit: cover"
     />
   </span>
 </a>

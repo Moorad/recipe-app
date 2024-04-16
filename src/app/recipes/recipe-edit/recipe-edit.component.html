@@ -5,7 +5,11 @@
     <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
       <div class="row">
         <div class="col-xs-12">
-          <button class="btn btn-success" [disabled]="!recipeForm.valid">
+          <button
+            class="btn btn-success"
+            type="submit"
+            [disabled]="!recipeForm.valid"
+          >
             Save
           </button>
           <button class="btn btn-danger" type="button" (click)="onCancel()">
@@ -103,10 +107,10 @@
             <label class="form-label">Ingredients</label>
             <div
               class="row mt-2"
-              *ngFor="let ingredientCtrl of controls; let i = index"
+              *ngFor="let ingredientCtrl of ingControls; let i = index"
               [formGroupName]="i"
             >
-              <div class="col-8">
+              <div class="col-5">
                 <input
                   type="text"
                   class="form-control"
@@ -128,35 +132,71 @@
                   >
                 </span>
               </div>
-              <div class="col-2">
-                <input
-                  type="number"
-                  class="form-control"
-                  [ngClass]="{
-                    'is-invalid':
-                      !recipeForm.get('ingredients.' + i + '.amount').valid &&
-                      recipeForm.get('ingredients.' + i + '.amount').touched
-                  }"
-                  formControlName="amount"
-                />
-                <span class="invalid-feedback">
-                  <ng-container
-                    *ngIf="
-                      recipeForm
-                        .get('ingredients.' + i + '.amount')
-                        .hasError('required')
-                    "
-                    >This field is required</ng-container
+              <div class="row col-5" formGroupName="amount">
+                <div class="col-6">
+                  <input
+                    type="number"
+                    class="form-control"
+                    [ngClass]="{
+                      'is-invalid':
+                        !recipeForm.get('ingredients.' + i + '.amount.value')
+                          .valid &&
+                        recipeForm.get('ingredients.' + i + '.amount.value')
+                          .touched
+                    }"
+                    formControlName="value"
+                  />
+                  <span class="invalid-feedback">
+                    <ng-container
+                      *ngIf="
+                        recipeForm
+                          .get('ingredients.' + i + '.amount.value')
+                          .hasError('required')
+                      "
+                      >This field is required</ng-container
+                    >
+                    <ng-container
+                      *ngIf="
+                        recipeForm
+                          .get('ingredients.' + i + '.amount.value')
+                          .hasError('min')
+                      "
+                      >Amount must be at least 1</ng-container
+                    >
+                  </span>
+                </div>
+                <div class="col-5">
+                  <select
+                    type="number"
+                    class="form-control"
+                    [ngClass]="{
+                      'is-invalid':
+                        !recipeForm.get('ingredients.' + i + '.amount.unit')
+                          .valid &&
+                        recipeForm.get('ingredients.' + i + '.amount.unit')
+                          .touched
+                    }"
+                    formControlName="unit"
                   >
-                  <ng-container
-                    *ngIf="
-                      recipeForm
-                        .get('ingredients.' + i + '.amount')
-                        .hasError('min')
-                    "
-                    >Amount must be at least 1</ng-container
-                  >
-                </span>
+                    <option value="g">g</option>
+                    <option value="kg">kg</option>
+                    <option value="tsp">tsp</option>
+                    <option value="tbsp">tbsp</option>
+                    <option value="cup">cup</option>
+                    <option value="ml">ml</option>
+                    <option value="l">l</option>
+                  </select>
+                  <span class="invalid-feedback">
+                    <ng-container
+                      *ngIf="
+                        recipeForm
+                          .get('ingredients.' + i + '.amount.unit')
+                          .hasError('required')
+                      "
+                      >This field is required</ng-container
+                    >
+                  </span>
+                </div>
               </div>
               <div class="col-2">
                 <button
@@ -176,6 +216,57 @@
                   (click)="onIngredientAdd()"
                 >
                   New Ingredient
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group" formArrayName="method">
+            <label class="form-label">How to Cook</label>
+            <div
+              class="row mt-2"
+              *ngFor="let methodCtrl of methodControls; let i = index"
+            >
+              <div class="col-1">{{ i + 1 }}.</div>
+              <div class="col-9">
+                <input
+                  type="text"
+                  class="form-control"
+                  [ngClass]="{
+                    'is-invalid':
+                      !recipeForm.get('method.' + i).valid &&
+                      recipeForm.get('method.' + i).touched
+                  }"
+                  [formControlName]="i"
+                />
+                <span class="invalid-feedback">
+                  <ng-container
+                    *ngIf="recipeForm.get('method.' + i).hasError('required')"
+                    >This field is required</ng-container
+                  >
+                </span>
+              </div>
+              <div class="col-2">
+                <button
+                  class="btn btn-danger"
+                  type="button"
+                  (click)="onStepDelete(i)"
+                >
+                  x
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12 mt-2">
+                <button
+                  type="button"
+                  class="btn btn-success"
+                  (click)="onStepAdd()"
+                >
+                  New step
                 </button>
               </div>
             </div>
