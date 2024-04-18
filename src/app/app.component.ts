@@ -6,7 +6,7 @@ import { AuthService } from './auth/auth.service';
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit {
-  title = 'angular-course-project';
+  title = 'recipe-book-app';
 
   constructor(private authService: AuthService) {}
 

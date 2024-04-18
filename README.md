@@ -1,4 +1,13 @@
-# AngularCourseProject
+# Recipe Book App
+
+Make sure to create an `environment.ts` file (for dev) and/or `enviroment.prod.ts` (for prod) under `src/environments/` with the following constants:
+
+```js
+export const environment = {
+  production: PRODUCTION_OR_NOT,
+  firebaseAPIKey: FIREBASE_API_KEY,
+};
+```
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.0.
 
