@@ -15,9 +15,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { RecipeEmptyComponent } from './recipes/recipe-empty/recipe-empty.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RecipeService } from './recipes/recipe.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgbDropdownModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TruncatePipe } from './shared/truncate.pipe';
+import { AuthComponent } from './auth/auth.component';
+import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
+import { AuthInterceptorService } from './auth/auth-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -32,6 +35,8 @@ import { TruncatePipe } from './shared/truncate.pipe';
     RecipeEditComponent,
     RecipeEmptyComponent,
     TruncatePipe,
+    AuthComponent,
+    LoadingSpinnerComponent,
   ],
   imports: [
     BrowserModule,
@@ -42,7 +47,15 @@ import { TruncatePipe } from './shared/truncate.pipe';
     NgbModule,
     NgbDropdownModule,
   ],
-  providers: [ShoppingListService, RecipeService],
+  providers: [
+    ShoppingListService,
+    RecipeService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

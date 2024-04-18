@@ -6,6 +6,8 @@ import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component
 import { RecipeEmptyComponent } from './recipes/recipe-empty/recipe-empty.component';
 import { RecipeDetailComponent } from './recipes/recipe-detail/recipe-detail.component';
 import { recipesResolver } from './recipes/recipes-resolver.service';
+import { AuthComponent } from './auth/auth.component';
+import { canActivateAuth } from './auth/auth.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: '/recipes', pathMatch: 'full' },
@@ -17,6 +19,7 @@ const routes: Routes = [
       {
         path: 'new',
         component: RecipeEditComponent,
+        canActivate: [canActivateAuth],
       },
       {
         path: ':id',
@@ -27,6 +30,7 @@ const routes: Routes = [
         path: ':id/edit',
         component: RecipeEditComponent,
         resolve: [recipesResolver],
+        canActivate: [canActivateAuth],
       },
     ],
   },
@@ -34,6 +38,7 @@ const routes: Routes = [
     path: 'shopping-list',
     component: ShoppingListComponent,
   },
+  { path: 'auth', component: AuthComponent },
 ];
 
 @NgModule({
