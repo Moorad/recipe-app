@@ -1,10 +1,10 @@
 import { Recipe } from './recipe.model';
-import { Subject } from 'rxjs';
+import { ReplaySubject, Subject } from 'rxjs';
 
 export class RecipeService {
   recipes: Recipe[] = [];
   recipeSelect = new Subject<Recipe>();
-  recipeChange = new Subject<Recipe[]>();
+  recipeChange = new ReplaySubject<Recipe[]>();
 
   getRecipe(id: number) {
     return this.recipes[id];

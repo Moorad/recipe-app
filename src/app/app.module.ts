@@ -21,6 +21,8 @@ import { TruncatePipe } from './shared/truncate.pipe';
 import { AuthComponent } from './auth/auth.component';
 import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
 import { AuthInterceptorService } from './auth/auth-interceptor.service';
+import { RecipeItemSkeletonComponent } from './recipes/recipe-list/recipe-item/recipe-item-skeleton/recipe-item-skeleton.component';
+import { RecipeDetailSkeletonComponent } from './recipes/recipe-detail/recipe-detail-skeleton/recipe-detail-skeleton.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,9 @@ import { AuthInterceptorService } from './auth/auth-interceptor.service';
     ShoppingListEditComponent,
     RecipeListComponent,
     RecipeItemComponent,
+    RecipeItemSkeletonComponent,
     RecipeDetailComponent,
+    RecipeDetailSkeletonComponent,
     RecipesComponent,
     RecipeEditComponent,
     RecipeEmptyComponent,

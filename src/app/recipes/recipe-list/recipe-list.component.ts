@@ -10,21 +10,25 @@ import { Subscription } from 'rxjs';
 })
 export class RecipeListComponent implements OnInit, OnDestroy {
   recipes: Recipe[] = [];
+  isLoadingRecipe = true;
   recipeChangeSub: Subscription;
 
   constructor(private recipeService: RecipeService) {}
 
   ngOnInit(): void {
-    this.recipes = this.recipeService.recipes;
-
     this.recipeChangeSub = this.recipeService.recipeChange.subscribe(
       (recipes) => {
         this.recipes = recipes;
+        this.isLoadingRecipe = false;
       }
     );
   }
 
   ngOnDestroy(): void {
     this.recipeChangeSub.unsubscribe();
+  }
+
+  sequenceArray(n: number) {
+    return Array(n).fill(0);
   }
 }

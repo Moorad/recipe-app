@@ -12,6 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class RecipeDetailComponent implements OnInit {
   recipe: Recipe;
   id: number;
+  isLoadingRecipe = true;
 
   constructor(
     private shoppingListService: ShoppingListService,
@@ -24,6 +25,11 @@ export class RecipeDetailComponent implements OnInit {
     this.route.params.subscribe((params) => {
       this.id = Number(params['id']);
       this.recipe = this.recipeService.getRecipe(this.id);
+    });
+
+    this.recipeService.recipeChange.subscribe(() => {
+      this.recipe = this.recipeService.getRecipe(this.id);
+      this.isLoadingRecipe = false;
     });
   }
 
