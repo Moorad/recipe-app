@@ -1,4 +1,4 @@
-type Unit = 'g' | 'kg' | 'tsp' | 'tbsp' | 'cup' | 'ml' | 'l';
+export type Unit = 'g' | 'kg' | 'tsp' | 'tbsp' | 'cup' | 'ml' | 'l';
 
 type Amount = {
   value: number;

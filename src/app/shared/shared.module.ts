@@ -3,13 +3,15 @@ import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.compo
 import { TruncatePipe } from './truncate.pipe';
 import { CommonModule } from '@angular/common';
 import { NgbModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { RoundPipe } from './round.pipe';
 
 @NgModule({
-  declarations: [LoadingSpinnerComponent, TruncatePipe],
+  declarations: [LoadingSpinnerComponent, TruncatePipe, RoundPipe],
   imports: [CommonModule, NgbModule, NgbDropdownModule],
   exports: [
     LoadingSpinnerComponent,
     TruncatePipe,
+    RoundPipe,
     CommonModule,
     NgbModule,
     NgbDropdownModule,
