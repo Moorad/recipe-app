@@ -2,8 +2,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DataStorageService } from '../shared/data-storage.service';
 import { AuthService } from '../auth/auth.service';
 import { Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, RouterModule, NgbDropdownModule],
   selector: 'app-header',
   templateUrl: './header.component.html',
 })

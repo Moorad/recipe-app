@@ -3,8 +3,12 @@ import { Recipe } from './recipe.model';
 import { RecipeService } from './recipe.service';
 import { Subscription } from 'rxjs';
 import { DataStorageService } from '../shared/data-storage.service';
+import { RecipeListComponent } from './recipe-list/recipe-list.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
+  standalone: true,
+  imports: [RecipeListComponent, RouterModule],
   selector: 'app-recipes',
   templateUrl: './recipes.component.html',
 })

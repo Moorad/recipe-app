@@ -1,10 +1,14 @@
 import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { AuthResponse, AuthService } from './auth.service';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { LoadingSpinnerComponent } from '../shared/loading-spinner/loading-spinner.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
+  standalone: true,
+  imports: [LoadingSpinnerComponent, CommonModule, FormsModule],
   selector: 'app-auth',
   templateUrl: './auth.component.html',
 })

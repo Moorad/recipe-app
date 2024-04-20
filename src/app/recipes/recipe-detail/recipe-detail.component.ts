@@ -2,9 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { Recipe } from '../recipe.model';
 import { ShoppingListService } from '../../shopping-list/shopping-list.service';
 import { RecipeService } from '../recipe.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { RecipeDetailSkeletonComponent } from './recipe-detail-skeleton/recipe-detail-skeleton.component';
 
 @Component({
+  standalone: true,
+  imports: [
+    RecipeDetailSkeletonComponent,
+    CommonModule,
+    NgbDropdownModule,
+    RouterModule,
+  ],
   selector: 'app-recipe-detail',
   templateUrl: './recipe-detail.component.html',
 })
