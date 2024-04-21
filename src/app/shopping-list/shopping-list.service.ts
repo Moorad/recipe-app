@@ -18,6 +18,11 @@ export class ShoppingListService {
     return this.ingredients[id];
   }
 
+  setIngredients(ingredients: Ingredient[]) {
+    this.ingredients = ingredients;
+    this.ingredientChange.next(this.ingredients);
+  }
+
   addIngredient(ingredient: Ingredient) {
     // Convert new ingredient to grams
     ingredient.amount = {

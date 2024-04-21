@@ -5,10 +5,17 @@ import { Subscription } from 'rxjs';
 import { ShoppingListEditComponent } from './shopping-list-edit/shopping-list-edit.component';
 import { CommonModule } from '@angular/common';
 import { RoundPipe } from '../shared/round.pipe';
+import { ShoppingListSkeletonComponent } from './shopping-list-skeleton/shopping-list-skeleton.component';
+import { DataStorageService } from '../shared/data-storage.service';
 
 @Component({
   standalone: true,
-  imports: [ShoppingListEditComponent, CommonModule, RoundPipe],
+  imports: [
+    ShoppingListEditComponent,
+    ShoppingListSkeletonComponent,
+    CommonModule,
+    RoundPipe,
+  ],
   selector: 'app-shopping-list',
   templateUrl: './shopping-list.component.html',
 })
@@ -17,10 +24,19 @@ export class ShoppingListComponent implements OnInit, OnDestroy {
   ingredientsDiff: number[] = [];
   ingredientChangeSub: Subscription;
   ingredientsDiffSub: Subscription;
+  isLoading = true;
 
-  constructor(private shoppingListService: ShoppingListService) {}
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private dataStorageService: DataStorageService
+  ) {}
 
   ngOnInit(): void {
+    this.dataStorageService.fetchShoppingList().subscribe((ingredients) => {
+      this.shoppingListService.setIngredients(ingredients);
+      this.isLoading = false;
+    });
+
     this.ingredientChangeSub =
       this.shoppingListService.ingredientChange.subscribe((ingredients) => {
         this.ingredients = ingredients;
