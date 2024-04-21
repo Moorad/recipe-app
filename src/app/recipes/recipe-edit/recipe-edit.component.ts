@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RecipeService } from '../recipe.service';
 import { Recipe } from '../recipe.model';
 import { CommonModule } from '@angular/common';
+import { DataStorageService } from '../../shared/data-storage.service';
 
 @Component({
   standalone: true,
@@ -18,25 +19,22 @@ import { CommonModule } from '@angular/common';
   templateUrl: './recipe-edit.component.html',
 })
 export class RecipeEditComponent implements OnInit {
-  id: number;
+  id: string;
   isEditing = false;
-  recipeEditedId: number;
   recipeForm: FormGroup;
+  isProcessingAction = false;
 
   constructor(
     private recipeService: RecipeService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private dataStorageService: DataStorageService
   ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
-      this.id = Number(params['id']);
+      this.id = params['id'];
       this.isEditing = params['id'] != null;
-
-      if (this.isEditing) {
-        this.recipeEditedId = params['id'];
-      }
 
       this.initForm();
     });
@@ -50,7 +48,7 @@ export class RecipeEditComponent implements OnInit {
     let recipeMethod = new FormArray([]);
 
     if (this.isEditing) {
-      const recipe = this.recipeService.getRecipe(this.recipeEditedId);
+      const recipe = this.recipeService.getRecipe(this.id);
       recipeName = recipe.name;
       recipeImageUrl = recipe.imageUrl;
       recipeDescription = recipe.description;
@@ -93,6 +91,7 @@ export class RecipeEditComponent implements OnInit {
       this.recipeForm.value;
 
     const newRecipe = new Recipe(
+      null,
       name,
       description,
       imageUrl,
@@ -100,13 +99,21 @@ export class RecipeEditComponent implements OnInit {
       method
     );
 
+    this.isProcessingAction = true;
+
     if (this.isEditing) {
-      this.recipeService.updateRecipe(this.recipeEditedId, newRecipe);
-      // Navigate back to edited recipe
-      this.onCancel();
+      this.dataStorageService.updateRecipe(this.id, newRecipe).subscribe(() => {
+        newRecipe.id = this.id;
+        this.recipeService.updateRecipe(this.id, newRecipe);
+        // Navigate back to edited recipe
+        this.onCancel();
+      });
     } else {
-      this.recipeService.addRecipe(newRecipe);
-      this.router.navigate(['/recipes', this.recipeService.recipes.length - 1]);
+      this.dataStorageService.createRecipe(newRecipe).subscribe((res) => {
+        newRecipe.id = res.name;
+        this.recipeService.addRecipe(newRecipe);
+        this.router.navigate(['/recipes', res.name]);
+      });
     }
   }
 

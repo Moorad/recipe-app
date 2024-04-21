@@ -6,6 +6,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { RecipeDetailSkeletonComponent } from './recipe-detail-skeleton/recipe-detail-skeleton.component';
+import { DataStorageService } from '../../shared/data-storage.service';
 
 @Component({
   standalone: true,
@@ -20,19 +21,21 @@ import { RecipeDetailSkeletonComponent } from './recipe-detail-skeleton/recipe-d
 })
 export class RecipeDetailComponent implements OnInit {
   recipe: Recipe;
-  id: number;
+  id: string;
   isLoadingRecipe = true;
+  isProcessingAction = false;
 
   constructor(
     private shoppingListService: ShoppingListService,
     private recipeService: RecipeService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private dataStorageService: DataStorageService
   ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
-      this.id = Number(params['id']);
+      this.id = params['id'];
       this.recipe = this.recipeService.getRecipe(this.id);
     });
 
@@ -43,12 +46,16 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   onToShoppingList() {
+    this.isProcessingAction = true;
     this.shoppingListService.addIngredients(this.recipe.ingredients);
     this.router.navigate(['/shopping-list']);
   }
 
   onDeleteRecipe() {
-    this.recipeService.deleteRecipe(this.id);
-    this.router.navigate(['/recipes']);
+    this.isProcessingAction = true;
+    this.dataStorageService.deleteRecipe(this.recipe.id).subscribe(() => {
+      this.recipeService.deleteRecipe(this.id);
+      this.router.navigate(['/recipes']);
+    });
   }
 }

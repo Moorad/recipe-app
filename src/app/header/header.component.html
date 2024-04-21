@@ -30,24 +30,6 @@
         </li>
       </ul>
       <ul class="navbar-nav ms-auto">
-        <li
-          class="nav-item"
-          display="dynamic"
-          ngbDropdown
-          *ngIf="isAuthenticated"
-        >
-          <button class="nav-link" role="button" ngbDropdownToggle>
-            Manage
-          </button>
-          <div ngbDropdownMenu>
-            <button ngbDropdownItem>
-              <a (click)="onSaveData()">Save Data</a>
-            </button>
-            <button ngbDropdownItem>
-              <a (click)="onFetchData()">Fetch Data</a>
-            </button>
-          </div>
-        </li>
         <li class="nav-item" *ngIf="isAuthenticated">
           <button class="nav-link" (click)="onLogout()">Logout</button>
         </li>

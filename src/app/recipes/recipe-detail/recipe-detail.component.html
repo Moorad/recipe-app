@@ -23,8 +23,16 @@
             type="button"
             id="dropdownMenuButton"
             ngbDropdownToggle
+            [disabled]="isProcessingAction"
           >
-            Manage recipe
+            <ng-container *ngIf="isProcessingAction; else default">
+              <span
+                class="spinner-border spinner-border-sm"
+                aria-hidden="true"
+              ></span>
+              Loading...
+            </ng-container>
+            <ng-template #default> Manage recipe </ng-template>
           </button>
           <div ngbDropdownMenu>
             <button (click)="onToShoppingList()" ngbDropdownItem>

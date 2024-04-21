@@ -8,8 +8,8 @@ export class RecipeService {
   recipeSelect = new Subject<Recipe>();
   recipeChange = new ReplaySubject<Recipe[]>();
 
-  getRecipe(id: number) {
-    return this.recipes[id];
+  getRecipe(id: string) {
+    return this.recipes.find((recipe) => recipe.id == id);
   }
 
   addRecipe(recipe: Recipe) {
@@ -17,13 +17,14 @@ export class RecipeService {
     this.recipeChange.next(this.recipes);
   }
 
-  updateRecipe(id: number, recipe: Recipe) {
-    this.recipes[id] = recipe;
+  updateRecipe(id: string, recipe: Recipe) {
+    const recipeIndex = this.recipes.findIndex((recipe) => recipe.id == id);
+    this.recipes[recipeIndex] = recipe;
     this.recipeChange.next(this.recipes);
   }
 
-  deleteRecipe(id: number) {
-    this.recipes.splice(id, 1);
+  deleteRecipe(id: string) {
+    this.recipes = this.recipes.filter((recipe) => recipe.id != id);
     this.recipeChange.next(this.recipes);
   }
 
