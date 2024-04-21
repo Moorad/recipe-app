@@ -2,7 +2,6 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { Ingredient } from '../shared/ingredient.model';
 import { Injectable } from '@angular/core';
 import {
-  convertToGrams,
   groupIngredients,
   copyIngredientsIntoGrams,
 } from '../utils/ingredient-helpers';
@@ -10,12 +9,12 @@ import {
 @Injectable({ providedIn: 'root' })
 export class ShoppingListService {
   ingredients: Ingredient[] = [];
-  ingredientSelect = new Subject<number>();
+  ingredientSelect = new Subject<string>();
   ingredientChange = new BehaviorSubject<Ingredient[]>([]);
   ingredientDiff = new BehaviorSubject<number[]>([]);
 
-  getIngredient(id: number) {
-    return this.ingredients[id];
+  getIngredient(id: string) {
+    return this.ingredients.find((ing) => ing.id == id);
   }
 
   setIngredients(ingredients: Ingredient[]) {
@@ -24,12 +23,6 @@ export class ShoppingListService {
   }
 
   addIngredient(ingredient: Ingredient) {
-    // Convert new ingredient to grams
-    ingredient.amount = {
-      value: convertToGrams(ingredient.amount.value, ingredient.amount.unit),
-      unit: 'g',
-    };
-
     // Group old with new (remove dups)
     const groupedIngredients = groupIngredients(
       this.ingredients.concat(ingredient)
@@ -60,19 +53,15 @@ export class ShoppingListService {
     );
   }
 
-  updateIngredient(id: number, ingredient: Ingredient) {
-    ingredient.amount = {
-      value: convertToGrams(ingredient.amount.value, ingredient.amount.unit),
-      unit: 'g',
-    };
-
-    this.ingredients[id] = ingredient;
+  updateIngredient(id: string, ingredient: Ingredient) {
+    const ingIndex = this.ingredients.findIndex((ing) => ing.id == id);
+    this.ingredients[ingIndex] = ingredient;
     this.ingredientChange.next(this.ingredients);
-    this.ingredientDiff.next([id]);
+    this.ingredientDiff.next([ingIndex]);
   }
 
-  deleteIngredient(id: number) {
-    this.ingredients.splice(id, 1);
+  deleteIngredient(id: string) {
+    this.ingredients = this.ingredients.filter((ing) => ing.id != id);
     this.ingredientChange.next(this.ingredients);
     // Clear ingredients changed
     this.ingredientDiff.next([]);

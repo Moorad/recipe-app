@@ -5,5 +5,5 @@ type Amount = {
   unit: Unit;
 };
 export class Ingredient {
-  constructor(public name: string, public amount: Amount) {}
+  constructor(public id: string, public name: string, public amount: Amount) {}
 }

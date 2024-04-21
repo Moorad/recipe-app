@@ -28,9 +28,9 @@ export class RecipeDetailComponent implements OnInit {
   constructor(
     private shoppingListService: ShoppingListService,
     private recipeService: RecipeService,
+    private dataStorageService: DataStorageService,
     private route: ActivatedRoute,
-    private router: Router,
-    private dataStorageService: DataStorageService
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -47,8 +47,12 @@ export class RecipeDetailComponent implements OnInit {
 
   onToShoppingList() {
     this.isProcessingAction = true;
-    this.shoppingListService.addIngredients(this.recipe.ingredients);
-    this.router.navigate(['/shopping-list']);
+    // this.shoppingListService.addIngredients(this.recipe.ingredients);
+    this.dataStorageService
+      .addShoppingListItems(this.recipe.ingredients)
+      .subscribe((res) => {
+        this.router.navigate(['/shopping-list']);
+      });
   }
 
   onDeleteRecipe() {

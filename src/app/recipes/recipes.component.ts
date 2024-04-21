@@ -33,7 +33,15 @@ export class RecipesComponent implements OnInit, OnDestroy {
       },
     });
 
-    this.recipeFetchSub = this.dataStorageService.fetchRecipes().subscribe();
+    this.recipeFetchSub = this.dataStorageService
+      .fetchRecipes()
+      .subscribe((recipes) => {
+        if (recipes) {
+          this.recipeService.setRecipes(recipes);
+        } else {
+          this.recipeService.setRecipes([]);
+        }
+      });
   }
 
   ngOnDestroy(): void {

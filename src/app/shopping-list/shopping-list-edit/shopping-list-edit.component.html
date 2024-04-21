@@ -52,17 +52,34 @@
           <button
             class="btn btn-success"
             type="submit"
-            [disabled]="!form.valid"
+            [disabled]="!form.valid || processingAction != null"
           >
-            {{ isEditing ? "Update" : "Add" }}
+            <ng-container *ngIf="processingAction == 'upsert'; else default">
+              <span
+                class="spinner-border spinner-border-sm"
+                aria-hidden="true"
+              ></span>
+              {{ isEditing ? "Updating..." : "Adding..." }}
+            </ng-container>
+            <ng-template #default>
+              {{ isEditing ? "Update" : "Add" }}
+            </ng-template>
           </button>
           <button
             class="btn btn-danger"
             type="button"
             (click)="onDeletion()"
             *ngIf="this.isEditing"
+            [disabled]="processingAction != null"
           >
-            Delete
+            <ng-container *ngIf="processingAction == 'delete'; else default">
+              <span
+                class="spinner-border spinner-border-sm"
+                aria-hidden="true"
+              ></span>
+              Delete...
+            </ng-container>
+            <ng-template #default> Delete </ng-template>
           </button>
           <button class="btn btn-primary" type="button" (click)="clearForm()">
             Clear

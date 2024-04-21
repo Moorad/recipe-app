@@ -4,6 +4,8 @@ import { ShoppingListService } from '../shopping-list.service';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { DataStorageService } from '../../shared/data-storage.service';
+import { convertToGrams } from '../../utils/ingredient-helpers';
 
 @Component({
   standalone: true,
@@ -14,10 +16,14 @@ import { CommonModule } from '@angular/common';
 export class ShoppingListEditComponent implements OnInit, OnDestroy {
   @ViewChild('form', { static: false }) form: NgForm;
   ingredientSelectSub: Subscription;
+  ingredientEditedId: string;
   isEditing = false;
-  ingredientEditedId: number;
+  processingAction: 'upsert' | 'delete' | null = null;
 
-  constructor(private shoppingListService: ShoppingListService) {}
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private dataStorageService: DataStorageService
+  ) {}
 
   ngOnInit(): void {
     this.ingredientSelectSub =
@@ -38,27 +44,50 @@ export class ShoppingListEditComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(form: NgForm) {
-    const ingredient = new Ingredient(form.value.name, {
-      value: parseFloat(form.value.amount.value),
-      unit: form.value.amount.unit,
+    this.processingAction = 'upsert';
+
+    // Creating an ingredient that is in grams
+    const ingredient = new Ingredient(null, form.value.name, {
+      value: convertToGrams(
+        parseFloat(form.value.amount.value),
+        form.value.amount.unit
+      ),
+      unit: 'g',
     });
 
     if (this.isEditing) {
-      this.shoppingListService.updateIngredient(
-        this.ingredientEditedId,
-        ingredient
-      );
+      this.dataStorageService
+        .updateShoppingListItem(this.ingredientEditedId, ingredient)
+        .subscribe(() => {
+          this.shoppingListService.updateIngredient(
+            this.ingredientEditedId,
+            ingredient
+          );
+          this.processingAction = null;
+          this.clearForm();
+        });
     } else {
-      this.shoppingListService.addIngredient(ingredient);
+      this.dataStorageService
+        .addShoppingListItem(ingredient)
+        .subscribe((res) => {
+          ingredient.id = res.name;
+          this.shoppingListService.addIngredient(ingredient);
+          this.processingAction = null;
+          this.clearForm();
+        });
     }
-
-    this.clearForm();
   }
 
   onDeletion() {
-    this.shoppingListService.deleteIngredient(this.ingredientEditedId);
+    this.processingAction = 'delete';
 
-    this.clearForm();
+    this.dataStorageService
+      .deleteShoppingListItem(this.ingredientEditedId)
+      .subscribe(() => {
+        this.shoppingListService.deleteIngredient(this.ingredientEditedId);
+        this.processingAction = null;
+        this.clearForm();
+      });
   }
 
   clearForm() {

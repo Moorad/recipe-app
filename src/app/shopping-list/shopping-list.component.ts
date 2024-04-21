@@ -33,7 +33,10 @@ export class ShoppingListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.dataStorageService.fetchShoppingList().subscribe((ingredients) => {
-      this.shoppingListService.setIngredients(ingredients);
+      if (ingredients) {
+        this.shoppingListService.setIngredients(ingredients);
+      }
+
       this.isLoading = false;
     });
 
@@ -50,7 +53,7 @@ export class ShoppingListComponent implements OnInit, OnDestroy {
   }
 
   onSelect(id: number) {
-    this.shoppingListService.ingredientSelect.next(id);
+    this.shoppingListService.ingredientSelect.next(this.ingredients[id].id);
   }
 
   ngOnDestroy(): void {

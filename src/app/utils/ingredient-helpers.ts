@@ -22,7 +22,7 @@ export function convertToGrams(value: number, unit: Unit) {
 
 export function copyIngredientsIntoGrams(ingredients: Ingredient[]) {
   return ingredients.map((ing) => {
-    return new Ingredient(ing.name, {
+    return new Ingredient(ing.id, ing.name, {
       value: convertToGrams(ing.amount.value, ing.amount.unit),
       unit: 'g',
     });

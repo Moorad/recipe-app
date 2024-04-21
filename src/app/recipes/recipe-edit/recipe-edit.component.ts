@@ -109,7 +109,7 @@ export class RecipeEditComponent implements OnInit {
         this.onCancel();
       });
     } else {
-      this.dataStorageService.createRecipe(newRecipe).subscribe((res) => {
+      this.dataStorageService.addRecipe(newRecipe).subscribe((res) => {
         newRecipe.id = res.name;
         this.recipeService.addRecipe(newRecipe);
         this.router.navigate(['/recipes', res.name]);
