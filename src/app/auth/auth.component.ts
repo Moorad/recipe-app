@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
   imports: [LoadingSpinnerComponent, CommonModule, FormsModule],
   selector: 'app-auth',
   templateUrl: './auth.component.html',
+  styleUrl: './auth.component.css',
 })
 export class AuthComponent {
   isLogin: boolean = false;
