@@ -21,7 +21,7 @@ import { DataStorageService } from '../shared/data-storage.service';
 })
 export class ShoppingListComponent implements OnInit, OnDestroy {
   ingredients: Ingredient[] = [];
-  ingredientsDiff: number[] = [];
+  ingredientsDiff: string[] = [];
   ingredientChangeSub: Subscription;
   ingredientsDiffSub: Subscription;
   isLoading = true;
@@ -46,14 +46,14 @@ export class ShoppingListComponent implements OnInit, OnDestroy {
       });
 
     this.ingredientsDiffSub = this.shoppingListService.ingredientDiff.subscribe(
-      (changedIndices) => {
-        this.ingredientsDiff = changedIndices;
+      (changedIds) => {
+        this.ingredientsDiff = changedIds;
       }
     );
   }
 
-  onSelect(id: number) {
-    this.shoppingListService.ingredientSelect.next(this.ingredients[id].id);
+  onSelect(id: string) {
+    this.shoppingListService.ingredientSelect.next(id);
   }
 
   ngOnDestroy(): void {

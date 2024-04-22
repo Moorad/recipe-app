@@ -5,7 +5,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { DataStorageService } from '../../shared/data-storage.service';
-import { convertToGrams } from '../../utils/ingredient-helpers';
+import { unitToGrams } from '../../utils/ingredient-helpers';
 
 @Component({
   standalone: true,
@@ -48,7 +48,7 @@ export class ShoppingListEditComponent implements OnInit, OnDestroy {
 
     // Creating an ingredient that is in grams
     const ingredient = new Ingredient(null, form.value.name, {
-      value: convertToGrams(
+      value: unitToGrams(
         parseFloat(form.value.amount.value),
         form.value.amount.unit
       ),
@@ -59,6 +59,7 @@ export class ShoppingListEditComponent implements OnInit, OnDestroy {
       this.dataStorageService
         .updateShoppingListItem(this.ingredientEditedId, ingredient)
         .subscribe(() => {
+          ingredient.id = this.ingredientEditedId;
           this.shoppingListService.updateIngredient(
             this.ingredientEditedId,
             ingredient
@@ -70,7 +71,8 @@ export class ShoppingListEditComponent implements OnInit, OnDestroy {
       this.dataStorageService
         .addShoppingListItem(ingredient)
         .subscribe((res) => {
-          ingredient.id = res.name;
+          ingredient.id = Object.keys(res)[0];
+
           this.shoppingListService.addIngredient(ingredient);
           this.processingAction = null;
           this.clearForm();

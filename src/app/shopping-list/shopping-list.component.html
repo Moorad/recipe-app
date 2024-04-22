@@ -10,10 +10,10 @@
       <div class="list-group">
         <a
           class="list-group-item list-group-item-action"
-          (click)="onSelect(i)"
           *ngFor="let ingredient of ingredients; let i = index"
+          (click)="onSelect(ingredient.id)"
           [ngClass]="{
-            'list-group-item-success': ingredientsDiff.includes(i)
+            'list-group-item-success': ingredientsDiff.includes(ingredient.id)
           }"
         >
           <span class="badge text-bg-primary">

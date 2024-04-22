@@ -7,6 +7,10 @@ import { CommonModule } from '@angular/common';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { RecipeDetailSkeletonComponent } from './recipe-detail-skeleton/recipe-detail-skeleton.component';
 import { DataStorageService } from '../../shared/data-storage.service';
+import {
+  InPlaceIngredientToGrams,
+  cloneIngredient,
+} from '../../utils/ingredient-helpers';
 
 @Component({
   standalone: true,
@@ -47,10 +51,18 @@ export class RecipeDetailComponent implements OnInit {
 
   onToShoppingList() {
     this.isProcessingAction = true;
-    // this.shoppingListService.addIngredients(this.recipe.ingredients);
+
+    const ingredientsInGrams = this.recipe.ingredients.map((ing) => {
+      const cloned = cloneIngredient(ing);
+      InPlaceIngredientToGrams(cloned);
+
+      return cloned;
+    });
+
     this.dataStorageService
-      .addShoppingListItems(this.recipe.ingredients)
+      .addShoppingListItems(ingredientsInGrams)
       .subscribe((res) => {
+        this.shoppingListService.ingredientDiff.next(Object.keys(res));
         this.router.navigate(['/shopping-list']);
       });
   }

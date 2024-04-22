@@ -1,7 +1,8 @@
 import { Ingredient } from '../shared/ingredient.model';
 import { Unit } from '../shared/ingredient.model';
+import { generatePushID } from './firebase-push-id';
 
-export function convertToGrams(value: number, unit: Unit) {
+export function unitToGrams(value: number, unit: Unit) {
   switch (unit) {
     case 'g':
       return value;
@@ -20,39 +21,75 @@ export function convertToGrams(value: number, unit: Unit) {
   }
 }
 
-export function copyIngredientsIntoGrams(ingredients: Ingredient[]) {
-  return ingredients.map((ing) => {
-    return new Ingredient(ing.id, ing.name, {
-      value: convertToGrams(ing.amount.value, ing.amount.unit),
-      unit: 'g',
-    });
+// Clone ingredient
+export function cloneIngredient(ingredient: Ingredient) {
+  return new Ingredient(ingredient.id, ingredient.name, {
+    value: ingredient.amount.value,
+    unit: ingredient.amount.unit,
   });
 }
 
-// Ingredients must be converted to grams beforehand
-export function groupIngredients(ingredients: Ingredient[]) {
-  let copiedArray = Array.from(ingredients);
-  let groupedIngredients = [];
-  for (let i = 0; i < copiedArray.length; i++) {
-    let currentIng = copiedArray[i];
-    groupedIngredients.push(currentIng);
+// In-place convert ingredient to grams
+export function InPlaceIngredientToGrams(ingredient: Ingredient) {
+  ingredient.amount = {
+    value: unitToGrams(ingredient.amount.value, ingredient.amount.unit),
+    unit: 'g',
+  };
+}
 
-    for (let j = i + 1; j < copiedArray.length; ) {
-      if (copiedArray[j].name == currentIng.name) {
-        const mergedAmntVal =
-          copiedArray[j].amount.value + currentIng.amount.value;
+// Clone original items from original list returned if found
+// Originl item returned if item is new
+export function differenceOfIngredients(
+  originalList: Ingredient[],
+  newIngredients: Ingredient[]
+) {
+  const diff: Ingredient[] = [];
 
-        currentIng.amount = {
-          value: mergedAmntVal,
-          unit: 'g',
-        };
+  newIngredients.forEach((newIng) => {
+    const matchFound = originalList.find(
+      (originalIng) => originalIng.name == newIng.name
+    );
 
-        copiedArray.splice(j, 1);
+    if (matchFound) {
+      diff.push(cloneIngredient(matchFound));
+    }
+
+    diff.push(newIng);
+  });
+
+  return diff;
+}
+
+// In-place merge ingredients
+export function mergeIngredients(ingredients: Ingredient[]) {
+  for (let i = 0; i < ingredients.length; i++) {
+    let currentIng = ingredients[i];
+
+    for (let j = i + 1; j < ingredients.length; ) {
+      if (ingredients[j].name == currentIng.name) {
+        currentIng.amount.value += ingredients[j].amount.value;
+
+        ingredients.splice(j, 1);
       } else {
         j++;
       }
     }
   }
+}
 
-  return groupedIngredients;
+// // Convert ingredients into a format that is PATCH-able into firebase RTDB
+export function toPATCHRequestFormat(ingredients: Ingredient[]) {
+  return ingredients.reduce((acc, curr) => {
+    if (curr.id) {
+      return {
+        ...acc,
+        [curr.id]: {
+          name: curr.name,
+          amount: curr.amount,
+        },
+      };
+    }
+
+    return { ...acc, [generatePushID()]: curr };
+  }, {});
 }

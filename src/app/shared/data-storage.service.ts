@@ -1,11 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { RecipeService } from '../recipes/recipe.service';
 import { Recipe } from '../recipes/recipe.model';
 import { exhaustMap, map, take, tap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Ingredient } from './ingredient.model';
-import { generatePushID } from '../utils/firebase-push-id';
+import { ShoppingListService } from '../shopping-list/shopping-list.service';
+import {
+  differenceOfIngredients,
+  mergeIngredients,
+  toPATCHRequestFormat,
+} from '../utils/ingredient-helpers';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +17,7 @@ import { generatePushID } from '../utils/firebase-push-id';
 export class DataStorageService {
   constructor(
     private http: HttpClient,
-    private recipeService: RecipeService,
+    private shoppingListService: ShoppingListService,
     private authService: AuthService
   ) {}
 
@@ -98,29 +102,42 @@ export class DataStorageService {
   }
 
   addShoppingListItem(ingredient: Ingredient) {
+    const difference = differenceOfIngredients(
+      this.shoppingListService.ingredients,
+      [ingredient]
+    );
+
+    mergeIngredients(difference);
+
+    const request = toPATCHRequestFormat(difference);
+
     return this.authService.user.pipe(
       take(1),
       exhaustMap((user) => {
-        return this.http.post<{ name: string }>(
+        return this.http.patch<{ [key: string]: Ingredient }>(
           `https://ng-recipe-app-dbf7b-default-rtdb.europe-west1.firebasedatabase.app/shopping-list/${user.id}.json`,
-          ingredient
+          request
         );
       })
     );
   }
 
   addShoppingListItems(ingredients: Ingredient[]) {
+    const difference = differenceOfIngredients(
+      this.shoppingListService.ingredients,
+      ingredients
+    );
+
+    mergeIngredients(difference);
+
+    const request = toPATCHRequestFormat(difference);
+
     return this.authService.user.pipe(
       take(1),
       exhaustMap((user) => {
-        const keyedIngredients = ingredients.reduce((acc, curr) => {
-          const pushId = generatePushID();
-          return { ...acc, [pushId]: curr };
-        }, {});
-
         return this.http.patch<Record<string, Ingredient>>(
           `https://ng-recipe-app-dbf7b-default-rtdb.europe-west1.firebasedatabase.app/shopping-list/${user.id}.json`,
-          keyedIngredients
+          request
         );
       })
     );
