@@ -32,10 +32,10 @@ export class DataStorageService {
             return null;
           }
 
-          return Object.values(res)
-            .map((userRecipes) =>
+          return Object.entries(res)
+            .map(([userId, userRecipes]) =>
               Object.entries(userRecipes).map(([key, value]) => {
-                return { ...value, id: key };
+                return { ...value, id: key, creatorId: userId };
               })
             )
             .flat();
@@ -163,6 +163,12 @@ export class DataStorageService {
           updatedIngredient
         );
       })
+    );
+  }
+
+  fetchUserData(userId: string) {
+    return this.http.get<{ username: string }>(
+      `https://ng-recipe-app-dbf7b-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}.json`
     );
   }
 }

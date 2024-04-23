@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './auth.component.css',
 })
 export class AuthComponent {
-  isLogin: boolean = false;
+  isLogin: boolean = true;
   isLoading: boolean = false;
   error: string;
 
@@ -25,7 +25,7 @@ export class AuthComponent {
   }
 
   onSubmit(form: NgForm) {
-    const { email, password } = form.value;
+    const { username, email, password } = form.value;
 
     let authObservable: Observable<AuthResponse>;
 
@@ -34,7 +34,7 @@ export class AuthComponent {
     if (this.isLogin) {
       authObservable = this.authService.loginUser(email, password);
     } else {
-      authObservable = this.authService.registerUser(email, password);
+      authObservable = this.authService.registerUser(username, email, password);
     }
 
     authObservable.subscribe({
@@ -46,7 +46,5 @@ export class AuthComponent {
         this.isLoading = false;
       },
     });
-
-    form.reset();
   }
 }

@@ -35,11 +35,21 @@
             <ng-template #default> Manage recipe </ng-template>
           </button>
           <div ngbDropdownMenu>
-            <button (click)="onToShoppingList()" ngbDropdownItem>
+            <button
+              (click)="onToShoppingList()"
+              ngbDropdownItem
+              [disabled]="!isAuthenticated"
+            >
               To shopping list
             </button>
-            <button routerLink="edit" ngbDropdownItem>Edit recipe</button>
-            <button (click)="onDeleteRecipe()" ngbDropdownItem>
+            <button routerLink="edit" ngbDropdownItem [disabled]="!isCreator">
+              Edit recipe
+            </button>
+            <button
+              (click)="onDeleteRecipe()"
+              ngbDropdownItem
+              [disabled]="!isCreator"
+            >
               Delete recipe
             </button>
           </div>
@@ -48,6 +58,9 @@
     </div>
     <div class="row my-3">
       <div class="col-xs-12">{{ recipe.description }}</div>
+      <small class="text-secondary mt-3" *ngIf="username"
+        >Recipe by: <span style="font-weight: 600">{{ username }}</span></small
+      >
     </div>
     <div class="row">
       <div class="col-xs-12">

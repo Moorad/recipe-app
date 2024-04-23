@@ -11,6 +11,8 @@ import { RecipeService } from '../recipe.service';
 import { Recipe } from '../recipe.model';
 import { CommonModule } from '@angular/common';
 import { DataStorageService } from '../../shared/data-storage.service';
+import { AuthService } from '../../auth/auth.service';
+import { take } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -23,12 +25,14 @@ export class RecipeEditComponent implements OnInit {
   isEditing = false;
   recipeForm: FormGroup;
   isProcessingAction = false;
+  userId: string;
 
   constructor(
     private recipeService: RecipeService,
+    private dataStorageService: DataStorageService,
+    private authService: AuthService,
     private route: ActivatedRoute,
-    private router: Router,
-    private dataStorageService: DataStorageService
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -37,6 +41,10 @@ export class RecipeEditComponent implements OnInit {
       this.isEditing = params['id'] != null;
 
       this.initForm();
+    });
+
+    this.authService.user.pipe(take(1)).subscribe((user) => {
+      this.userId = user.id;
     });
   }
 
@@ -92,6 +100,7 @@ export class RecipeEditComponent implements OnInit {
 
     const newRecipe = new Recipe(
       null,
+      null,
       name,
       description,
       imageUrl,
@@ -104,6 +113,7 @@ export class RecipeEditComponent implements OnInit {
     if (this.isEditing) {
       this.dataStorageService.updateRecipe(this.id, newRecipe).subscribe(() => {
         newRecipe.id = this.id;
+        newRecipe.creatorId = this.userId;
         this.recipeService.updateRecipe(this.id, newRecipe);
         // Navigate back to edited recipe
         this.onCancel();
@@ -111,6 +121,7 @@ export class RecipeEditComponent implements OnInit {
     } else {
       this.dataStorageService.addRecipe(newRecipe).subscribe((res) => {
         newRecipe.id = res.name;
+        newRecipe.creatorId = this.userId;
         this.recipeService.addRecipe(newRecipe);
         this.router.navigate(['/recipes', res.name]);
       });

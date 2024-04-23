@@ -11,6 +11,8 @@ import {
   InPlaceIngredientToGrams,
   cloneIngredient,
 } from '../../utils/ingredient-helpers';
+import { exhaustMap, take, tap } from 'rxjs';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   standalone: true,
@@ -29,10 +31,15 @@ export class RecipeDetailComponent implements OnInit {
   isLoadingRecipe = true;
   isProcessingAction = false;
 
+  isAuthenticated = false;
+  isCreator = false;
+  username: string = '';
+
   constructor(
     private shoppingListService: ShoppingListService,
     private recipeService: RecipeService,
     private dataStorageService: DataStorageService,
+    private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -41,11 +48,20 @@ export class RecipeDetailComponent implements OnInit {
     this.route.params.subscribe((params) => {
       this.id = params['id'];
       this.recipe = this.recipeService.getRecipe(this.id);
+
+      if (!this.isLoadingRecipe) {
+        this.fetchRecipeUser().subscribe();
+      }
+    });
+
+    this.authService.user.pipe(take(1)).subscribe((user) => {
+      this.isAuthenticated = !!user;
     });
 
     this.recipeService.recipeChange.subscribe(() => {
       this.recipe = this.recipeService.getRecipe(this.id);
       this.isLoadingRecipe = false;
+      this.fetchRecipeUser().subscribe();
     });
   }
 
@@ -73,5 +89,28 @@ export class RecipeDetailComponent implements OnInit {
       this.recipeService.deleteRecipe(this.id);
       this.router.navigate(['/recipes']);
     });
+  }
+
+  fetchRecipeUser() {
+    // Reset current recipe user
+    this.username = '';
+    this.isCreator = false;
+
+    return this.authService.user.pipe(
+      take(1),
+      exhaustMap((user) => {
+        if (user) {
+          this.isCreator = user.id == this.recipe.creatorId;
+        }
+
+        return this.dataStorageService
+          .fetchUserData(this.recipe.creatorId)
+          .pipe(
+            tap((userData) => {
+              this.username = userData.username;
+            })
+          );
+      })
+    );
   }
 }

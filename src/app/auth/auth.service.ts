@@ -1,6 +1,10 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpParams,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, delayWhen, tap, throwError } from 'rxjs';
 import { User } from './user.model';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
@@ -21,7 +25,7 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  registerUser(email: string, password: string) {
+  registerUser(username: string, email: string, password: string) {
     return this.http
       .post<AuthResponse>(
         `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseAPIKey}`,
@@ -33,6 +37,15 @@ export class AuthService {
       )
       .pipe(
         catchError(this.handleError),
+        delayWhen((res) => {
+          return this.http.put(
+            `https://ng-recipe-app-dbf7b-default-rtdb.europe-west1.firebasedatabase.app/users/${res.localId}.json`,
+            { username: username },
+            {
+              params: new HttpParams().set('auth', res.idToken),
+            }
+          );
+        }),
         tap((res) => {
           this.handleUserEmission(
             res.email,
