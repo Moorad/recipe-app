@@ -47,7 +47,8 @@ export function differenceOfIngredients(
 
   newIngredients.forEach((newIng) => {
     const matchFound = originalList.find(
-      (originalIng) => originalIng.name == newIng.name
+      (originalIng) =>
+        originalIng.name.toLowerCase() == newIng.name.toLowerCase()
     );
 
     if (matchFound) {
@@ -66,7 +67,7 @@ export function mergeIngredients(ingredients: Ingredient[]) {
     let currentIng = ingredients[i];
 
     for (let j = i + 1; j < ingredients.length; ) {
-      if (ingredients[j].name == currentIng.name) {
+      if (ingredients[j].name.toLowerCase() == currentIng.name.toLowerCase()) {
         currentIng.amount.value += ingredients[j].amount.value;
 
         ingredients.splice(j, 1);

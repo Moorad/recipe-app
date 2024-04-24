@@ -84,6 +84,14 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   onDeleteRecipe() {
+    const dialogAccepted = confirm(
+      'Are you sure you want to do this? The recipe will be deleted permanently.'
+    );
+
+    if (!dialogAccepted) {
+      return;
+    }
+
     this.isProcessingAction = true;
     this.dataStorageService.deleteRecipe(this.recipe.id).subscribe(() => {
       this.recipeService.deleteRecipe(this.id);

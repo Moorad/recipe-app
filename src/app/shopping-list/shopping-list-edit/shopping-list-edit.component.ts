@@ -47,7 +47,7 @@ export class ShoppingListEditComponent implements OnInit, OnDestroy {
     this.processingAction = 'upsert';
 
     // Creating an ingredient that is in grams
-    const ingredient = new Ingredient(null, form.value.name, {
+    const ingredient = new Ingredient(null, form.value.name.trim(), {
       value: unitToGrams(
         parseFloat(form.value.amount.value),
         form.value.amount.unit
@@ -81,6 +81,14 @@ export class ShoppingListEditComponent implements OnInit, OnDestroy {
   }
 
   onDeletion() {
+    const dialogAccepted = confirm(
+      'Are you sure you want to do this? This item will be deleted permanently from your shopping list.'
+    );
+
+    if (!dialogAccepted) {
+      return;
+    }
+
     this.processingAction = 'delete';
 
     this.dataStorageService
@@ -90,6 +98,22 @@ export class ShoppingListEditComponent implements OnInit, OnDestroy {
         this.processingAction = null;
         this.clearForm();
       });
+  }
+
+  onClearShoppingList() {
+    const dialogAccepted = confirm(
+      'Are you sure you want to do this? All items in your shopping list will be deleted permanently.'
+    );
+
+    if (!dialogAccepted) {
+      return;
+    }
+
+    this.dataStorageService.deleteAllShoppingListItems().subscribe((res) => {
+      this.shoppingListService.ingredients = [];
+      this.shoppingListService.ingredientChange.next([]);
+      this.shoppingListService.ingredientDiff.next([]);
+    });
   }
 
   clearForm() {

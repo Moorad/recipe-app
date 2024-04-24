@@ -171,4 +171,15 @@ export class DataStorageService {
       `https://ng-recipe-app-dbf7b-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}.json`
     );
   }
+
+  deleteAllShoppingListItems() {
+    return this.authService.user.pipe(
+      take(1),
+      exhaustMap((user) => {
+        return this.http.delete(
+          `https://ng-recipe-app-dbf7b-default-rtdb.europe-west1.firebasedatabase.app/shopping-list/${user.id}.json`
+        );
+      })
+    );
+  }
 }

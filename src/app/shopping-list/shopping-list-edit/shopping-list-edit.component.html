@@ -23,7 +23,7 @@
               class="form-control"
               ngModel=""
               required
-              min="1"
+              min="0.1"
             />
           </div>
           <div class="col-sm-6 form-group">
@@ -83,6 +83,13 @@
           </button>
           <button class="btn btn-primary" type="button" (click)="clearForm()">
             Clear
+          </button>
+          <button
+            class="btn btn-secondary ms-auto"
+            type="button"
+            (click)="onClearShoppingList()"
+          >
+            Clear Shopping List
           </button>
         </div>
       </div>
